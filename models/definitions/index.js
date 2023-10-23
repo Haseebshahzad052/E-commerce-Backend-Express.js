@@ -1,78 +1,75 @@
 let sequelize = require("../../common/dbConnection");
+let cart = require("./user/cart");
+let product = require("./user/products");
 let user = require("./user/user");
-let student = require("./user/student");
-let teacher = require("./user/teacher");
-let course = require("./user/course");
-let categories = require("./user/categories")
-let products = require("./user/products")
 
-user.hasOne(student, {
-  onDelete: "CASCADE",
-  foreignKey: { name: "userId", allowNull: false, unique: true },
-});
-student.belongsTo(user, {
-  onDelete: "CASCADE",
-  foreignKey: { name: "userId", allowNull: false, unique: true },
-});
+let category = require("./user/categories");
 
-user.hasOne(teacher, {
+// user
+// category
+// product
+// cart
+// order
+
+// O-O btw user & cart
+user.hasOne(cart, {
   onDelete: "CASCADE",
-  foreignKey: { name: "userId", allowNull: false, unique: true },
+  foreignKey: { name: "userID", allowNull: false },
 });
-teacher.belongsTo(user, {
+cart.belongsTo(user, {
   onDelete: "CASCADE",
-  foreignKey: { name: "userId", allowNull: false, unique: true },
+  foreignKey: { name: "userID", allowNull: false },
 });
 
-// course.hasMany(teacher, {
-//   onDelete: "CASCADE",
-//   foreignKey: {
-//     name: "courseId",
-//     allowNull: false,
-//     unique: false,
-//     autoIncrement: true,
-//   },
-// });
-// teacher.belongsTo(course, {
-//   onDelete: "CASCADE",
-//   foreignKey: {
-//     name: "courseId",
-//     allowNull: false,
-//     unique: false,
-//     autoIncrement: true,
-//   },
-// });
-teacher.belongsToMany(course, {
+// M-M btw user & product
+user.belongsToMany(product, {
   onDelete: "CASCADE",
-  through: "TeacherCourse",
-  as: "Course",
-  foreignKey: { name: "teacherID", allowNull: false },
+  through: "UserProduct",
+  as: "Product",
+  foreignKey: { name: "userID", allowNull: false },
 });
 
-course.belongsToMany(teacher, {
+product.belongsToMany(user, {
   onDelete: "CASCADE",
-  through: "TeacherCourse",
-  as: "Teacher",
-  foreignKey: { name: "courseID", allowNull: false },
-});
-
-products.belongsToMany(categories, {
-  onDelete: "CASCADE",
-  through: "ProductCategory",
-  as: "Categories",
+  through: "UserProduct",
+  as: " User",
   foreignKey: { name: "productID", allowNull: false },
 });
 
-categories.belongsToMany(products, {
+// M-M btw category & product
+product.belongsToMany(category, {
   onDelete: "CASCADE",
   through: "ProductCategory",
-  as: "Product",
+  as: "Category",
+  foreignKey: { name: "productID", allowNull: false },
+});
+
+category.belongsToMany(product, {
+  onDelete: "CASCADE",
+  through: "ProductCategory",
+  as: " Product",
   foreignKey: { name: "categoryID", allowNull: false },
 });
 
+// M-M btw cart & product
+product.belongsToMany(cart, {
+  onDelete: "CASCADE",
+  through: "ProductCart",
+  as: "Cart",
+  foreignKey: { name: "productID", allowNull: false },
+});
+
+cart.belongsToMany(product, {
+  onDelete: "CASCADE",
+  through: "ProductCart",
+  as: "Product",
+  foreignKey: { name: "cartID", allowNull: false },
+});
 
 const models = sequelize.models;
-console.log(models);
+
 const db = {};
 db.sequelize = sequelize;
+console.log(models);
+
 module.exports = { db, models };

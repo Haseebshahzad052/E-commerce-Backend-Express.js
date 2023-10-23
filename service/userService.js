@@ -10,6 +10,9 @@ module.exports = {
     const saltRound = 10;
     data.password = bcrypt.hashSync(data.password,saltRound)
     const result = await models.user.create(data);
+    
+    const cart = await models.cart.create({ userID: result.id });
+    result.setCart(cart);
     return result;
   },
 };
