@@ -12,6 +12,8 @@ module.exports = {
     const result = await models.products.create(data);
     return result;
   },
+
+
   getProductById: async (id) => {
     const result = await models.products.findByPk(parseInt(id));
     if (!result) {

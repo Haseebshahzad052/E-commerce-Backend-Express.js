@@ -9,6 +9,7 @@ module.exports = {
     const data = await productsService.createProducts(req.body);
     res.send(data);
   },
+
   getProductById: async (req, res) => {
     try {
       const result = await productsService.getProductById(req.params.id);
