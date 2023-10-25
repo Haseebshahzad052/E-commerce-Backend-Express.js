@@ -6,5 +6,6 @@ var router = express.Router();
 router.post("/add/:userID/:productID", cartController.addProductToCart);
 // router.post("/createUser", userController.createUser);
 
+router.delete("/remove/:userID/:productID", cartController.removeProductFromCart);
 
 module.exports = router;
